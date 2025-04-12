@@ -1,0 +1,119 @@
+﻿@page "/paymentmethods/edit"
+@using Microsoft.EntityFrameworkCore
+@using TreadElswhereApperal.Models
+@inject IDbContextFactory<TreadElswhereApperal.Models.EcommerceDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>PaymentMethod</h2>
+<hr />
+@if (PaymentMethod is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="PaymentMethod" OnValidSubmit="UpdatePaymentMethod" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="PaymentMethod.Id" value="@PaymentMethod.Id" />
+                <div class="mb-3">
+                    <label for="customerid" class="form-label">CustomerId:</label>
+                    <InputNumber id="customerid" @bind-Value="PaymentMethod.CustomerId" class="form-control" />
+                    <ValidationMessage For="() => PaymentMethod.CustomerId" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="billingaddress" class="form-label">BillingAddress:</label>
+                    <InputText id="billingaddress" @bind-Value="PaymentMethod.BillingAddress" class="form-control" />
+                    <ValidationMessage For="() => PaymentMethod.BillingAddress" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="cardnumber" class="form-label">CardNumber:</label>
+                    <InputNumber id="cardnumber" @bind-Value="PaymentMethod.CardNumber" class="form-control" />
+                    <ValidationMessage For="() => PaymentMethod.CardNumber" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="expirationdate" class="form-label">ExpirationDate:</label>
+                    <InputDate id="expirationdate" @bind-Value="PaymentMethod.ExpirationDate" class="form-control" />
+                    <ValidationMessage For="() => PaymentMethod.ExpirationDate" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="csv" class="form-label">Csv:</label>
+                    <InputNumber id="csv" @bind-Value="PaymentMethod.Csv" class="form-control" />
+                    <ValidationMessage For="() => PaymentMethod.Csv" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="paymentprovider" class="form-label">PaymentProvider:</label>
+                    <InputText id="paymentprovider" @bind-Value="PaymentMethod.PaymentProvider" class="form-control" />
+                    <ValidationMessage For="() => PaymentMethod.PaymentProvider" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="paymenttype" class="form-label">PaymentType:</label>
+                    <InputText id="paymenttype" @bind-Value="PaymentMethod.PaymentType" class="form-control" />
+                    <ValidationMessage For="() => PaymentMethod.PaymentType" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/paymentmethods">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private PaymentMethod? PaymentMethod { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        PaymentMethod ??= await context.PaymentMethods.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (PaymentMethod is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdatePaymentMethod()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(PaymentMethod!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!PaymentMethodExists(PaymentMethod!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/paymentmethods");
+    }
+
+    private bool PaymentMethodExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.PaymentMethods.Any(e => e.Id == id);
+    }
+}

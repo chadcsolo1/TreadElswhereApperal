@@ -1,0 +1,42 @@
+﻿@page "/paymentmethods"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using TreadElswhereApperal.Models
+@using TreadElswhereApperal.Models
+@implements IAsyncDisposable
+@inject IDbContextFactory<TreadElswhereApperal.Models.EcommerceDbContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="paymentmethods/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.PaymentMethods">
+    <PropertyColumn Property="paymentmethod => paymentmethod.CustomerId" />
+    <PropertyColumn Property="paymentmethod => paymentmethod.BillingAddress" />
+    <PropertyColumn Property="paymentmethod => paymentmethod.CardNumber" />
+    <PropertyColumn Property="paymentmethod => paymentmethod.ExpirationDate" />
+    <PropertyColumn Property="paymentmethod => paymentmethod.Csv" />
+    <PropertyColumn Property="paymentmethod => paymentmethod.PaymentProvider" />
+    <PropertyColumn Property="paymentmethod => paymentmethod.PaymentType" />
+
+    <TemplateColumn Context="paymentmethod">
+        <a href="@($"paymentmethods/edit?id={paymentmethod.Id}")">Edit</a> |
+        <a href="@($"paymentmethods/details?id={paymentmethod.Id}")">Details</a> |
+        <a href="@($"paymentmethods/delete?id={paymentmethod.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private EcommerceDbContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

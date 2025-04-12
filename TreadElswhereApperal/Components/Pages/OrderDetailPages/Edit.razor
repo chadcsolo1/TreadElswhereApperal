@@ -1,0 +1,109 @@
+﻿@page "/orderdetails/edit"
+@using Microsoft.EntityFrameworkCore
+@using TreadElswhereApperal.Models
+@inject IDbContextFactory<TreadElswhereApperal.Models.EcommerceDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>OrderDetail</h2>
+<hr />
+@if (OrderDetail is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="OrderDetail" OnValidSubmit="UpdateOrderDetail" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="OrderDetail.Id" value="@OrderDetail.Id" />
+                <div class="mb-3">
+                    <label for="orderid" class="form-label">OrderId:</label>
+                    <InputNumber id="orderid" @bind-Value="OrderDetail.OrderId" class="form-control" />
+                    <ValidationMessage For="() => OrderDetail.OrderId" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="productid" class="form-label">ProductId:</label>
+                    <InputNumber id="productid" @bind-Value="OrderDetail.ProductId" class="form-control" />
+                    <ValidationMessage For="() => OrderDetail.ProductId" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="quantity" class="form-label">Quantity:</label>
+                    <InputNumber id="quantity" @bind-Value="OrderDetail.Quantity" class="form-control" />
+                    <ValidationMessage For="() => OrderDetail.Quantity" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="priceperunit" class="form-label">PricePerUnit:</label>
+                    <InputNumber id="priceperunit" @bind-Value="OrderDetail.PricePerUnit" class="form-control" />
+                    <ValidationMessage For="() => OrderDetail.PricePerUnit" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="subtotal" class="form-label">Subtotal:</label>
+                    <InputNumber id="subtotal" @bind-Value="OrderDetail.Subtotal" class="form-control" />
+                    <ValidationMessage For="() => OrderDetail.Subtotal" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/orderdetails">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private OrderDetail? OrderDetail { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        OrderDetail ??= await context.OrderDetails.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (OrderDetail is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateOrderDetail()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(OrderDetail!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!OrderDetailExists(OrderDetail!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/orderdetails");
+    }
+
+    private bool OrderDetailExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.OrderDetails.Any(e => e.Id == id);
+    }
+}

@@ -1,0 +1,64 @@
+﻿@page "/products/details"
+@using Microsoft.EntityFrameworkCore
+@using TreadElswhereApperal.Models
+@inject IDbContextFactory<TreadElswhereApperal.Models.EcommerceDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Product</h2>
+    <hr />
+    @if (product is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Name</dt>
+            <dd class="col-sm-10">@product.Name</dd>
+            <dt class="col-sm-2">ProductDescription</dt>
+            <dd class="col-sm-10">@product.ProductDescription</dd>
+            <dt class="col-sm-2">Price</dt>
+            <dd class="col-sm-10">@product.Price</dd>
+            <dt class="col-sm-2">StockQuantity</dt>
+            <dd class="col-sm-10">@product.StockQuantity</dd>
+            <dt class="col-sm-2">IsActive</dt>
+            <dd class="col-sm-10">@product.IsActive</dd>
+            <dt class="col-sm-2">ShowProperties</dt>
+            <dd class="col-sm-10">@product.ShowProperties</dd>
+            <dt class="col-sm-2">AvailableAfter</dt>
+            <dd class="col-sm-10">@product.AvailableAfter</dd>
+            <dt class="col-sm-2">Styles</dt>
+            <dd class="col-sm-10">@product.Styles</dd>
+            <dt class="col-sm-2">Sizes</dt>
+            <dd class="col-sm-10">@product.Sizes</dd>
+            <dt class="col-sm-2">Colors</dt>
+            <dd class="col-sm-10">@product.Colors</dd>
+        </dl>
+        <div>
+            <a href="@($"/products/edit?id={product.Id}")">Edit</a> |
+            <a href="@($"/products")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Product? product;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        product = await context.Products.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (product is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

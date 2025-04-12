@@ -1,0 +1,89 @@
+﻿@page "/products/create"
+@using Microsoft.EntityFrameworkCore
+@using TreadElswhereApperal.Models
+@inject IDbContextFactory<TreadElswhereApperal.Models.EcommerceDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Product</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Product" OnValidSubmit="AddProduct" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label> 
+                <InputText id="name" @bind-Value="Product.Name" class="form-control" /> 
+                <ValidationMessage For="() => Product.Name" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="productdescription" class="form-label">ProductDescription:</label> 
+                <InputText id="productdescription" @bind-Value="Product.ProductDescription" class="form-control" /> 
+                <ValidationMessage For="() => Product.ProductDescription" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="price" class="form-label">Price:</label> 
+                <InputNumber id="price" @bind-Value="Product.Price" class="form-control" /> 
+                <ValidationMessage For="() => Product.Price" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="stockquantity" class="form-label">StockQuantity:</label> 
+                <InputNumber id="stockquantity" @bind-Value="Product.StockQuantity" class="form-control" /> 
+                <ValidationMessage For="() => Product.StockQuantity" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="isactive" class="form-label">IsActive:</label> 
+                <InputCheckbox id="isactive" @bind-Value="Product.IsActive" class="form-check-input" /> 
+                <ValidationMessage For="() => Product.IsActive" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="showproperties" class="form-label">ShowProperties:</label> 
+                <InputCheckbox id="showproperties" @bind-Value="Product.ShowProperties" class="form-check-input" /> 
+                <ValidationMessage For="() => Product.ShowProperties" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="availableafter" class="form-label">AvailableAfter:</label> 
+                <InputDate id="availableafter" @bind-Value="Product.AvailableAfter" class="form-control" /> 
+                <ValidationMessage For="() => Product.AvailableAfter" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="styles" class="form-label">Styles:</label> 
+                <InputText id="styles" @bind-Value="Product.Styles" class="form-control" /> 
+                <ValidationMessage For="() => Product.Styles" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="sizes" class="form-label">Sizes:</label> 
+                <InputText id="sizes" @bind-Value="Product.Sizes" class="form-control" /> 
+                <ValidationMessage For="() => Product.Sizes" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="colors" class="form-label">Colors:</label> 
+                <InputText id="colors" @bind-Value="Product.Colors" class="form-control" /> 
+                <ValidationMessage For="() => Product.Colors" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/products">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Product Product { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddProduct()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Products.Add(Product);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/products");
+    }
+}

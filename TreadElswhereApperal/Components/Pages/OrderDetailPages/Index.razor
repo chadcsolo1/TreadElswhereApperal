@@ -1,0 +1,40 @@
+﻿@page "/orderdetails"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using TreadElswhereApperal.Models
+@using TreadElswhereApperal.Models
+@implements IAsyncDisposable
+@inject IDbContextFactory<TreadElswhereApperal.Models.EcommerceDbContext> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="orderdetails/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.OrderDetails">
+    <PropertyColumn Property="orderdetail => orderdetail.OrderId" />
+    <PropertyColumn Property="orderdetail => orderdetail.ProductId" />
+    <PropertyColumn Property="orderdetail => orderdetail.Quantity" />
+    <PropertyColumn Property="orderdetail => orderdetail.PricePerUnit" />
+    <PropertyColumn Property="orderdetail => orderdetail.Subtotal" />
+
+    <TemplateColumn Context="orderdetail">
+        <a href="@($"orderdetails/edit?id={orderdetail.Id}")">Edit</a> |
+        <a href="@($"orderdetails/details?id={orderdetail.Id}")">Details</a> |
+        <a href="@($"orderdetails/delete?id={orderdetail.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private EcommerceDbContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

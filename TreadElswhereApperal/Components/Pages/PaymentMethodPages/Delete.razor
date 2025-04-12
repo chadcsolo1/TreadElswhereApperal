@@ -1,0 +1,79 @@
+﻿@page "/paymentmethods/delete"
+@using Microsoft.EntityFrameworkCore
+@using TreadElswhereApperal.Models
+@inject IDbContextFactory<TreadElswhereApperal.Models.EcommerceDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Delete</PageTitle>
+
+<h1>Delete</h1>
+
+<p>Are you sure you want to delete this?</p>
+<div>
+    <h2>PaymentMethod</h2>
+    <hr />
+    @if (paymentmethod is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">CustomerId</dt>
+            <dd class="col-sm-10">@paymentmethod.CustomerId</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">BillingAddress</dt>
+            <dd class="col-sm-10">@paymentmethod.BillingAddress</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">CardNumber</dt>
+            <dd class="col-sm-10">@paymentmethod.CardNumber</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">ExpirationDate</dt>
+            <dd class="col-sm-10">@paymentmethod.ExpirationDate</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Csv</dt>
+            <dd class="col-sm-10">@paymentmethod.Csv</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">PaymentProvider</dt>
+            <dd class="col-sm-10">@paymentmethod.PaymentProvider</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">PaymentType</dt>
+            <dd class="col-sm-10">@paymentmethod.PaymentType</dd>
+        </dl>
+        <EditForm method="post" Model="paymentmethod" OnValidSubmit="DeletePaymentMethod" FormName="delete" Enhance>
+            <button type="submit" class="btn btn-danger" disabled="@(paymentmethod is null)">Delete</button> |
+            <a href="/paymentmethods">Back to List</a>
+        </EditForm>
+    }
+</div>
+
+@code {
+    private PaymentMethod? paymentmethod;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        paymentmethod = await context.PaymentMethods.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (paymentmethod is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    private async Task DeletePaymentMethod()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.PaymentMethods.Remove(paymentmethod!);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/paymentmethods");
+    }
+}

@@ -1,0 +1,58 @@
+﻿@page "/paymentmethods/details"
+@using Microsoft.EntityFrameworkCore
+@using TreadElswhereApperal.Models
+@inject IDbContextFactory<TreadElswhereApperal.Models.EcommerceDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>PaymentMethod</h2>
+    <hr />
+    @if (paymentmethod is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">CustomerId</dt>
+            <dd class="col-sm-10">@paymentmethod.CustomerId</dd>
+            <dt class="col-sm-2">BillingAddress</dt>
+            <dd class="col-sm-10">@paymentmethod.BillingAddress</dd>
+            <dt class="col-sm-2">CardNumber</dt>
+            <dd class="col-sm-10">@paymentmethod.CardNumber</dd>
+            <dt class="col-sm-2">ExpirationDate</dt>
+            <dd class="col-sm-10">@paymentmethod.ExpirationDate</dd>
+            <dt class="col-sm-2">Csv</dt>
+            <dd class="col-sm-10">@paymentmethod.Csv</dd>
+            <dt class="col-sm-2">PaymentProvider</dt>
+            <dd class="col-sm-10">@paymentmethod.PaymentProvider</dd>
+            <dt class="col-sm-2">PaymentType</dt>
+            <dd class="col-sm-10">@paymentmethod.PaymentType</dd>
+        </dl>
+        <div>
+            <a href="@($"/paymentmethods/edit?id={paymentmethod.Id}")">Edit</a> |
+            <a href="@($"/paymentmethods")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private PaymentMethod? paymentmethod;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        paymentmethod = await context.PaymentMethods.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (paymentmethod is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

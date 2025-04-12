@@ -1,0 +1,54 @@
+﻿@page "/orderdetails/details"
+@using Microsoft.EntityFrameworkCore
+@using TreadElswhereApperal.Models
+@inject IDbContextFactory<TreadElswhereApperal.Models.EcommerceDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>OrderDetail</h2>
+    <hr />
+    @if (orderdetail is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">OrderId</dt>
+            <dd class="col-sm-10">@orderdetail.OrderId</dd>
+            <dt class="col-sm-2">ProductId</dt>
+            <dd class="col-sm-10">@orderdetail.ProductId</dd>
+            <dt class="col-sm-2">Quantity</dt>
+            <dd class="col-sm-10">@orderdetail.Quantity</dd>
+            <dt class="col-sm-2">PricePerUnit</dt>
+            <dd class="col-sm-10">@orderdetail.PricePerUnit</dd>
+            <dt class="col-sm-2">Subtotal</dt>
+            <dd class="col-sm-10">@orderdetail.Subtotal</dd>
+        </dl>
+        <div>
+            <a href="@($"/orderdetails/edit?id={orderdetail.Id}")">Edit</a> |
+            <a href="@($"/orderdetails")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private OrderDetail? orderdetail;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        orderdetail = await context.OrderDetails.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (orderdetail is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

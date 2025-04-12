@@ -1,0 +1,64 @@
+﻿@page "/customers/details"
+@using Microsoft.EntityFrameworkCore
+@using TreadElswhereApperal.Models
+@inject IDbContextFactory<TreadElswhereApperal.Models.EcommerceDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Customer</h2>
+    <hr />
+    @if (customer is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">FirstName</dt>
+            <dd class="col-sm-10">@customer.FirstName</dd>
+            <dt class="col-sm-2">LastName</dt>
+            <dd class="col-sm-10">@customer.LastName</dd>
+            <dt class="col-sm-2">Email</dt>
+            <dd class="col-sm-10">@customer.Email</dd>
+            <dt class="col-sm-2">Password</dt>
+            <dd class="col-sm-10">@customer.Password</dd>
+            <dt class="col-sm-2">Salt</dt>
+            <dd class="col-sm-10">@customer.Salt</dd>
+            <dt class="col-sm-2">Address</dt>
+            <dd class="col-sm-10">@customer.Address</dd>
+            <dt class="col-sm-2">DateOfBirth</dt>
+            <dd class="col-sm-10">@customer.DateOfBirth</dd>
+            <dt class="col-sm-2">AccountCreated</dt>
+            <dd class="col-sm-10">@customer.AccountCreated</dd>
+            <dt class="col-sm-2">AccountUpdated</dt>
+            <dd class="col-sm-10">@customer.AccountUpdated</dd>
+            <dt class="col-sm-2">AccountStatus</dt>
+            <dd class="col-sm-10">@customer.AccountStatus</dd>
+        </dl>
+        <div>
+            <a href="@($"/customers/edit?id={customer.Id}")">Edit</a> |
+            <a href="@($"/customers")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Customer? customer;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        customer = await context.Customers.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (customer is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

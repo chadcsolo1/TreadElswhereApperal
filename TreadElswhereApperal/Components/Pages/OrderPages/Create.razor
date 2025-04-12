@@ -1,0 +1,89 @@
+﻿@page "/orders/create"
+@using Microsoft.EntityFrameworkCore
+@using TreadElswhereApperal.Models
+@inject IDbContextFactory<TreadElswhereApperal.Models.EcommerceDbContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Order</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Order" OnValidSubmit="AddOrder" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="customerid" class="form-label">CustomerId:</label> 
+                <InputNumber id="customerid" @bind-Value="Order.CustomerId" class="form-control" /> 
+                <ValidationMessage For="() => Order.CustomerId" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="datecreated" class="form-label">DateCreated:</label> 
+                <InputDate id="datecreated" @bind-Value="Order.DateCreated" class="form-control" /> 
+                <ValidationMessage For="() => Order.DateCreated" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="orderstatus" class="form-label">OrderStatus:</label> 
+                <InputText id="orderstatus" @bind-Value="Order.OrderStatus" class="form-control" /> 
+                <ValidationMessage For="() => Order.OrderStatus" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="paymentstatus" class="form-label">PaymentStatus:</label> 
+                <InputText id="paymentstatus" @bind-Value="Order.PaymentStatus" class="form-control" /> 
+                <ValidationMessage For="() => Order.PaymentStatus" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="paymentmethod" class="form-label">PaymentMethod:</label> 
+                <InputText id="paymentmethod" @bind-Value="Order.PaymentMethod" class="form-control" /> 
+                <ValidationMessage For="() => Order.PaymentMethod" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="paymentdate" class="form-label">PaymentDate:</label> 
+                <InputDate id="paymentdate" @bind-Value="Order.PaymentDate" class="form-control" /> 
+                <ValidationMessage For="() => Order.PaymentDate" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="totalamount" class="form-label">TotalAmount:</label> 
+                <InputNumber id="totalamount" @bind-Value="Order.TotalAmount" class="form-control" /> 
+                <ValidationMessage For="() => Order.TotalAmount" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="priceperunit" class="form-label">PricePerUnit:</label> 
+                <InputNumber id="priceperunit" @bind-Value="Order.PricePerUnit" class="form-control" /> 
+                <ValidationMessage For="() => Order.PricePerUnit" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="quantity" class="form-label">Quantity:</label> 
+                <InputNumber id="quantity" @bind-Value="Order.Quantity" class="form-control" /> 
+                <ValidationMessage For="() => Order.Quantity" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="subtotal" class="form-label">Subtotal:</label> 
+                <InputNumber id="subtotal" @bind-Value="Order.Subtotal" class="form-control" /> 
+                <ValidationMessage For="() => Order.Subtotal" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/orders">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Order Order { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddOrder()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Orders.Add(Order);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/orders");
+    }
+}
