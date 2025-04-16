@@ -84,6 +84,11 @@ public partial class EcommerceDbContext : DbContext
                 .HasConstraintName("FK__PaymentMe__Custo__5629CD9C");
         });
 
+        modelBuilder.Entity<Product>(entity =>
+        {
+            entity.Property(e => e.Img).HasColumnName("img");
+        });
+
         OnModelCreatingPartial(modelBuilder);
     }
 

@@ -1,0 +1,16 @@
+﻿
+
+<Card Class="mb-4" Style="width:18rem;">
+    <img class="rounded-top" src="lib/images/bluehat.png" alt="placeholder" />
+    <CardBody>
+        <CardTitle>@Product.Name</CardTitle>
+        <CardText>@Product.ProductDescription</CardText>
+        <Button Color="ButtonColor.Primary" To="#" Type="ButtonType.Link">Add to Cart</Button>
+    </CardBody>
+</Card>
+
+@code {
+    [Parameter]
+    public Product Product { get; set; } = new Product();
+}
+

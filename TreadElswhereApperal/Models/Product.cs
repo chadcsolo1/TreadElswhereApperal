@@ -27,5 +27,7 @@ public partial class Product
 
     public string Colors { get; set; } = null!;
 
+    public byte[]? Img { get; set; }
+
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 }

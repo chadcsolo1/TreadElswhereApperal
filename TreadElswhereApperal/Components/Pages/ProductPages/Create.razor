@@ -64,7 +64,18 @@
                 <label for="colors" class="form-label">Colors:</label> 
                 <InputText id="colors" @bind-Value="Product.Colors" class="form-control" /> 
                 <ValidationMessage For="() => Product.Colors" class="text-danger" /> 
-            </div>        
+            </div>
+            <div class="custom-file-input">
+                <label for="productimage" class="form-label">Product Image:</label>
+                <InputFile id="productimage" @bind-Value="Product.Img" accept=".jpg,.jpeg,.png" OnChange="HandleImageFile" />
+                <span class="custom-file-label">Choose File</span>
+                @if (imagePreview != null)
+                {
+                    <div style="margin: 1rem; border: solid black 2px; width: 254px; height: 254px;">
+                        <img src="@imagePreview" alt="Image Preview" style="width: 250px; height: 250px" />
+                    </div>
+                }
+            </div>
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
     </div>
@@ -77,6 +88,7 @@
 @code {
     [SupplyParameterFromForm]
     private Product Product { get; set; } = new();
+    private string? imagePreview;
 
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddProduct()
@@ -85,5 +97,25 @@
         context.Products.Add(Product);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/products");
+    }
+
+    private async Task HandleImageFile(InputFileChangeEventArgs e)
+    {
+        byte[] imageBytes;
+
+        if (e.File != null)
+        {
+            if(e.File.Size < 150000)
+            {
+                using (var stream = new MemoryStream())
+                {
+                    await e.File.OpenReadStream(150000).CopyToAsync(stream);
+                    imageBytes = stream.ToArray();
+                    imagePreview = $"data:{e.File.ContentType};base64,{Convert.ToBase64String(imageBytes)}";
+
+                    Product.Img = imageBytes;
+                }
+            }
+        }
     }
 }

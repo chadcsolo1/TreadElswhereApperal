@@ -1,0 +1,30 @@
+﻿@page "/productsdisplay"
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<EcommerceDbContext> DbContextFactory
+@inject NavigationManager NavigationManager
+
+
+<h3>ProductsDisplay</h3>
+<div class="grid-container">
+    @foreach (var product in listOfProducts)
+    {
+        <_ProductCard Product="product" />
+    }
+</div>
+
+
+
+
+
+@code {
+    private EcommerceDbContext _dbContext = default!;
+    List<Product> listOfProducts = new();
+    Product testProduct = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _dbContext = DbContextFactory.CreateDbContext();
+        listOfProducts = await _dbContext.Products.ToListAsync();
+        testProduct = listOfProducts.FirstOrDefault();
+    }
+}
