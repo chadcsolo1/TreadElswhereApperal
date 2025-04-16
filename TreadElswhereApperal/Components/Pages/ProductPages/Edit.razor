@@ -72,6 +72,19 @@ else
                     <InputText id="colors" @bind-Value="Product.Colors" class="form-control" />
                     <ValidationMessage For="() => Product.Colors" class="text-danger" />
                 </div>
+                <div class="mb-3">
+                    <label for="img" class="form-label">img:</label>
+                    @* <InputText id="img" @bind-Value="Product.Img" class="form-control" /> *@
+                    <InputFile id="productimage" @bind-Value="Product.Img" accept=".jpg,.png,.jpeg" onchange="HandleImageFile" />
+                    <ValidationMessage For="() => Product.Img" class="text-danger" />
+
+                    @if (imagePreview != null)
+                    {
+                        <div style="margin: 1rem; border: solid black 2px; width: 254px; height: 254px;">
+                            <img src="@imagePreview" alt="Image Preview" style="width: 250px; height: 250px" />
+                        </div>
+                    }
+                </div>
                 <button type="submit" class="btn btn-primary">Save</button>
             </EditForm>
         </div>
@@ -88,6 +101,7 @@ else
 
     [SupplyParameterFromForm]
     private Product? Product { get; set; }
+    private string? imagePreview;
 
     protected override async Task OnInitializedAsync()
     {
@@ -130,5 +144,13 @@ else
     {
         using var context = DbFactory.CreateDbContext();
         return context.Products.Any(e => e.Id == id);
+    }
+
+    private async Task HandleImageFile(InputFileChangeEventArgs e)
+    {
+        if (Product.Img != null)
+        {
+            imagePreview = Product.Img;
+        }
     }
 }

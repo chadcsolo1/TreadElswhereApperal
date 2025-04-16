@@ -86,7 +86,9 @@ public partial class EcommerceDbContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.Property(e => e.Img).HasColumnName("img");
+            entity.Property(e => e.Img)
+                .IsUnicode(false)
+                .HasColumnName("img");
         });
 
         OnModelCreatingPartial(modelBuilder);
