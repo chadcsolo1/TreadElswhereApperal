@@ -1,0 +1,54 @@
+﻿@page "/products/details/{id:int}"
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<EcommerceDbContext> DbContextFactory
+<h3>_ViewProduct</h3>
+
+<div class="container">
+    <div class="product-image">
+        <img src="@Product.Img" alt="Product Image" class="img-fluid" />
+    </div>
+    <div class="product-details">
+        <dl class="row">
+            <dt class="col-sm-2">Name</dt>
+            <dd class="col-sm-10">@Product.Name</dd>
+            <dt class="col-sm-2">ProductDescription</dt>
+            <dd class="col-sm-10">@Product.ProductDescription</dd>
+            <dt class="col-sm-2">Price</dt>
+            <dd class="col-sm-10">@Product.Price</dd>
+            <dt class="col-sm-2">StockQuantity</dt>
+            <dd class="col-sm-10">@Product.StockQuantity</dd>
+            <dt class="col-sm-2">IsActive</dt>
+            <dd class="col-sm-10">@Product.IsActive</dd>
+            <dt class="col-sm-2">ShowProperties</dt>
+            <dd class="col-sm-10">@Product.ShowProperties</dd>
+            <dt class="col-sm-2">AvailableAfter</dt>
+            <dd class="col-sm-10">@Product.AvailableAfter</dd>
+            <dt class="col-sm-2">Styles</dt>
+            <dd class="col-sm-10">@Product.Styles</dd>
+            <dt class="col-sm-2">Sizes</dt>
+            <dd class="col-sm-10">@Product.Sizes</dd>
+            <dt class="col-sm-2">Colors</dt>
+            <dd class="col-sm-10">@Product.Colors</dd>
+        </dl>
+
+        <Button>Add to Cart</Button>
+        <Button>Buy Now</Button>
+        <Button Color="ButtonColor.Link" To="/productsdisplay" Type="ButtonType.Link">Return to Products</Button>
+    </div>
+    <div class="featured-products">
+
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    private EcommerceDbContext _dbContext = default!;
+    private Product Product { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _dbContext = DbContextFactory.CreateDbContext();
+        Product = _dbContext.Products.FirstOrDefault(p => p.Id == id);
+    }
+}

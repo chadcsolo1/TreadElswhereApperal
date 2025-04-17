@@ -148,9 +148,10 @@ else
 
     private async Task HandleImageFile(InputFileChangeEventArgs e)
     {
-        if (Product.Img != null)
+        if (e.File != null)
         {
-            imagePreview = Product.Img;
+            imagePreview = $"lib/images/{e.File.Name}";
+            Product.Img = $"lib/images/{e.File.Name}";
         }
     }
 }

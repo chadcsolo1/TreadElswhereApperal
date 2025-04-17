@@ -1,0 +1,16 @@
+﻿@page "/shoppingcart"
+<h3>ShoppingCart</h3>
+
+<Offcanvas @ref="offcanvasCart" Title="Offcanvas ShoppingCart" Placement="Placement.End">
+    <BodyTemplate>
+
+    </BodyTemplate>
+</Offcanvas>
+
+
+@code {
+    [Parameter]
+    public List<Product> Products { get; set; } = new List<Product>();
+
+    private Offcanvas offcanvasCart = default!;
+}
