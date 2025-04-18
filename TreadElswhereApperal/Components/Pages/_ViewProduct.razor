@@ -1,28 +1,20 @@
 ﻿@page "/products/details/{id:int}"
 @using Microsoft.EntityFrameworkCore
 @inject IDbContextFactory<EcommerceDbContext> DbContextFactory
-<h3>_ViewProduct</h3>
+
 
 <div class="container">
     <div class="product-image">
         <img src="@Product.Img" alt="Product Image" class="img-fluid" />
     </div>
     <div class="product-details">
-        <dl class="row">
+        <dl class="column">
             <dt class="col-sm-2">Name</dt>
             <dd class="col-sm-10">@Product.Name</dd>
             <dt class="col-sm-2">ProductDescription</dt>
             <dd class="col-sm-10">@Product.ProductDescription</dd>
             <dt class="col-sm-2">Price</dt>
             <dd class="col-sm-10">@Product.Price</dd>
-            <dt class="col-sm-2">StockQuantity</dt>
-            <dd class="col-sm-10">@Product.StockQuantity</dd>
-            <dt class="col-sm-2">IsActive</dt>
-            <dd class="col-sm-10">@Product.IsActive</dd>
-            <dt class="col-sm-2">ShowProperties</dt>
-            <dd class="col-sm-10">@Product.ShowProperties</dd>
-            <dt class="col-sm-2">AvailableAfter</dt>
-            <dd class="col-sm-10">@Product.AvailableAfter</dd>
             <dt class="col-sm-2">Styles</dt>
             <dd class="col-sm-10">@Product.Styles</dd>
             <dt class="col-sm-2">Sizes</dt>
@@ -30,13 +22,26 @@
             <dt class="col-sm-2">Colors</dt>
             <dd class="col-sm-10">@Product.Colors</dd>
         </dl>
-
-        <Button>Add to Cart</Button>
-        <Button>Buy Now</Button>
-        <Button Color="ButtonColor.Link" To="/productsdisplay" Type="ButtonType.Link">Return to Products</Button>
+        <div class="button-box">
+            <div class="row">
+                <div class="col">
+                    <Button Color="ButtonColor.Primary" Type="ButtonType.Button"  class="button">Add to Cart</Button>                   
+                </div>
+                <div class="col">
+                    <Button Color="ButtonColor.Secondary" Type="ButtonType.Button" Class="button">Buy Now</Button>                    
+                </div>
+                <div class="col">
+                    <Button Class="button" Color="ButtonColor.Link" To="/productsdisplay" Type="ButtonType.Link">Return to Products</Button>
+                </div>
+            </div>
+            
+        </div>
     </div>
     <div class="featured-products">
-
+        @foreach (var product in Products) 
+        {
+            <_ProductCard Product="product"/>
+        }
     </div>
 </div>
 
@@ -45,10 +50,14 @@
     public int id { get; set; }
     private EcommerceDbContext _dbContext = default!;
     private Product Product { get; set; }
+    private List<Product> Products = new();
+    private IEnumerable<Product> highlightedProducts;
+
 
     protected override void OnInitialized()
     {
         _dbContext = DbContextFactory.CreateDbContext();
         Product = _dbContext.Products.FirstOrDefault(p => p.Id == id);
+        Products = _dbContext.Products.Where(x => x.Id < 5).ToList();
     }
 }
