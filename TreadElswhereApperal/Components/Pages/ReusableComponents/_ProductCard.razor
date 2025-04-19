@@ -5,7 +5,7 @@
     <CardBody>
         <CardTitle>@Product.Name</CardTitle>
         <CardText>@Product.ProductDescription</CardText>
-        <Button Color="ButtonColor.Primary" To="/shoppingcart" Type="ButtonType.Link">Add to Cart</Button>
+        <Button Color="ButtonColor.Primary" Type="ButtonType.Link" @onclick="() => AddToCart(Product)">Add to Cart</Button>
         <Button Color="ButtonColor.Secondary" @onclick="NavigateToDetails" Type="ButtonType.Link">View Details</Button>
     </CardBody>
 </Card>
@@ -14,9 +14,17 @@
     [Parameter]
     public Product Product { get; set; } = new Product();
 
+    [Parameter]
+    public EventCallback<Product> OnAddToCart {get; set;}
+
     private void NavigateToDetails()
     {
         NavigationManager.NavigateTo($"/products/details/{Product.Id}");
+    }
+
+    private async Task AddToCart(Product product)
+    {
+        await OnAddToCart.InvokeAsync(product);
     }
 }
 

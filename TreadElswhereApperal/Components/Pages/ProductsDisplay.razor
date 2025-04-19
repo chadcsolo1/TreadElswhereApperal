@@ -8,23 +8,59 @@
 <div class="grid-container">
     @foreach (var product in listOfProducts)
     {
-        <_ProductCard Product="product" />
+        <_ProductCard Product="product" OnAddToCart="AddProductToCart"/>
     }
 </div>
 
+@* <ShoppingCart Products="cartProducts"/> *@
 
+<Offcanvas @ref="offcanvasCart" Title="Offcanvas ShoppingCart" Placement="Placement.End">
+    <BodyTemplate>
+        <div>
+            <h2>Product</h2>
+            <hr />
+            @if (cartProducts is null)
+            {
+                <p><em>Loading...</em></p>
+            } else
+            {
+                @foreach (var prod in cartProducts)
+                {
+                    <div class="card-container">
+                        <div class="card">
+                            <img src="@prod.Img" alt="Product Image" class="img-fluid" />
+                            <h5>@prod.Name</h5>
+                            <p>@prod.ProductDescription</p>
+                            <p>Price: @prod.Price</p>
+
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </BodyTemplate>
+</Offcanvas>
 
 
 
 @code {
     private EcommerceDbContext _dbContext = default!;
     List<Product> listOfProducts = new();
+    public List<Product> cartProducts = new();
     Product testProduct = new();
+    private Offcanvas offcanvasCart = default!;
 
     protected override async Task OnInitializedAsync()
     {
         _dbContext = DbContextFactory.CreateDbContext();
         listOfProducts = await _dbContext.Products.ToListAsync();
         testProduct = listOfProducts.FirstOrDefault();
+    }
+
+    protected async Task AddProductToCart(Product product)
+    {
+        cartProducts.Add(product);
+
+        await offcanvasCart.ShowAsync();
     }
 }
