@@ -14,10 +14,10 @@
 
 @* <ShoppingCart Products="cartProducts"/> *@
 
-<Offcanvas @ref="offcanvasCart" Title="Offcanvas ShoppingCart" Placement="Placement.End">
+<Offcanvas @ref="ShoppingCart" Title="ShoppingCart" Placement="Placement.End">
     <BodyTemplate>
         <div>
-            <h2>Product</h2>
+            <h2>Select Products</h2>
             <hr />
             @if (cartProducts is null)
             {
@@ -26,13 +26,13 @@
             {
                 @foreach (var prod in cartProducts)
                 {
-                    <div class="card-container">
-                        <div class="card">
-                            <img src="@prod.Img" alt="Product Image" class="img-fluid" />
+                    <div class="card-container" >
+                        <div class="card" style="width: 100px" >
+                            <img src="@prod.Img" alt="Product Image" style="height: 100px" class="img-fluid" />
                             <h5>@prod.Name</h5>
                             <p>@prod.ProductDescription</p>
                             <p>Price: @prod.Price</p>
-
+                            <Button @onclick="() => RemoveProductFromCart(prod)" Color="ButtonColor.Danger" >Remove</Button>
                         </div>
                     </div>
                 }
@@ -48,7 +48,7 @@
     List<Product> listOfProducts = new();
     public List<Product> cartProducts = new();
     Product testProduct = new();
-    private Offcanvas offcanvasCart = default!;
+    private Offcanvas ShoppingCart = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -61,6 +61,11 @@
     {
         cartProducts.Add(product);
 
-        await offcanvasCart.ShowAsync();
+        await ShoppingCart.ShowAsync();
+    }
+
+    protected async Task RemoveProductFromCart(Product product)
+    {
+        cartProducts.Remove(product);
     }
 }
