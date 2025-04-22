@@ -19,23 +19,42 @@
         <div>
             <h2>Select Products</h2>
             <hr />
-            @if (cartProducts is null)
+            @if (order is null)
             {
                 <p><em>Loading...</em></p>
             } else
             {
-                @foreach (var prod in cartProducts)
+                @foreach (var order in order.OrderDetails)
                 {
-                    <div class="card-container" >
-                        <div class="card" style="width: 100px" >
-                            <img src="@prod.Img" alt="Product Image" style="height: 100px" class="img-fluid" />
-                            <h5>@prod.Name</h5>
-                            <p>@prod.ProductDescription</p>
-                            <p>Price: @prod.Price</p>
-                            <Button @onclick="() => RemoveProductFromCart(prod)" Color="ButtonColor.Danger" >Remove</Button>
+                    <div class="card-container" style="margin-top: 5px;">
+                        <div class="card" style="display: flex; flex-direction: row; justify-content: space-between; align-content: stretch;">
+                            <div class="row" style="margin-right: 0px;">
+                                <div class="col">
+                                    <img src="@order.Product.Img" alt="Product Image" style="height: 150px; width: 250px" class="img-fluid" />
+                                </div>
+                                <div class="col" style="text-align: center;">
+                                    <h5 style="font-size: 16px; font-weight: bold">@order.Product.Name</h5>
+                                    <p style="font-size: 11px;">Color: @order.Product.Colors</p>
+                                    <p style="font-size: 11px;">Size: @order.Product.Sizes</p>
+                                    <InputNumber type="number" @bind-Value="order.Quantity" style="width: 60px;"></InputNumber>
+                                </div>
+                                <div class="col" style="display: flex; flex-direction: column; justify-content: space-between; width: auto; padding-left: 10px;">
+                                    <Button @onclick="() => RemoveProductFromCart(order.Product)" Style="background-color: none; margin-right: 0px; padding-right: 0px; text-align: right;">
+                                        <Icon Name="IconName.Trash"></Icon>
+                                    </Button>
+                                    <p @bind-Value="@order.Quantity" @bind-Value:event="oninput" style="font-size: 15px; margin-right: 0px; padding-right: 0px; text-align: right;">$ @order.Subtotal</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 }
+                <div>
+                    <hr/>
+                    <h5 style="font-size: 16px; font-weight: bold">Total: $ @order.Subtotal</h5>
+                    <Button Color="ButtonColor.Primary" Type="ButtonType.Link" style="align-content: stretch">
+                         CHECKOUT
+                    </Button>
+                </div>
             }
         </div>
     </BodyTemplate>
@@ -46,7 +65,8 @@
 @code {
     private EcommerceDbContext _dbContext = default!;
     List<Product> listOfProducts = new();
-    public List<Product> cartProducts = new();
+    //public List<Product> cartProducts = new();
+    public Order order = new();
     Product testProduct = new();
     private Offcanvas ShoppingCart = default!;
 
@@ -59,13 +79,27 @@
 
     protected async Task AddProductToCart(Product product)
     {
-        cartProducts.Add(product);
+        order.CustomerId = 1;
+        order.PricePerUnit = (decimal)product.Price;
+        order.Quantity = 1;
+        order.Subtotal = ((decimal)product.Price * order.Quantity);
+        order.OrderDetails.Add(new OrderDetail
+        {
+                ProductId = product.Id,
+                Product = product,
+                Quantity = 1,
+                PricePerUnit = (decimal)product.Price,
+                Subtotal = ((decimal)product.Price * order.Quantity)
+
+        });
+
+
 
         await ShoppingCart.ShowAsync();
     }
 
     protected async Task RemoveProductFromCart(Product product)
     {
-        cartProducts.Remove(product);
+        order.OrderDetails.Remove(order.OrderDetails.FirstOrDefault(x => x.Product == product));
     }
 }

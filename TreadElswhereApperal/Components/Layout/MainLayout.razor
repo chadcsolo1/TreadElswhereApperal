@@ -11,7 +11,17 @@
         </div>
 
         <article class="content px-4">
-            @Body
+            <ErrorBoundary Context="Exception">
+                <ChildContent>
+                    @Body
+                </ChildContent>
+                <ErrorContent>
+                    <h1>Sorry, there was an error!</h1>
+                    <p>Details: @Exception.Message</p>
+                    <p>Inner Exception: @Exception.InnerException</p>
+                    <p>Stack Trace: @Exception.StackTrace</p>
+                </ErrorContent>
+            </ErrorBoundary>
         </article>
     </main>
 </div>

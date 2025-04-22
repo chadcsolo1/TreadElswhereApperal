@@ -9,15 +9,15 @@ public partial class Order
 
     public int? CustomerId { get; set; }
 
-    public DateTime? DateCreated { get; set; }
+    public DateTime? DateCreated { get; set; } = DateTime.UtcNow;
 
-    public string? OrderStatus { get; set; }
+    public string? OrderStatus { get; set; } = "Pending";
 
-    public string? PaymentStatus { get; set; }
+    public string? PaymentStatus { get; set; } = "None";
 
     public string? PaymentMethod { get; set; }
 
-    public DateTime? PaymentDate { get; set; }
+    public DateTime? PaymentDate { get; set; } = DateTime.UtcNow;
 
     public decimal? TotalAmount { get; set; }
 
