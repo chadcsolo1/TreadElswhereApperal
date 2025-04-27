@@ -1,8 +1,21 @@
 ﻿@page "/"
 
-<div class="page-container">
-    <div class="header row" style="height: 500px;border: 1px solid black; background-image: url(/lib/images/homepagecover.png); object-fit: contain;">
-            @* <img src="/lib/images/homepagecover.png" style="height: auto;width: auto; object-fit: contain;" /> *@
-
+@* style="height: 500px;border: 1px solid black; background-image: url(/lib/images/homepagecover.png); object-fit: cover;" *@
+@* <img src="/lib/images/homepagecover.png" style="display: block; margin-left: auto; margin-right: auto; width: 100%; height: 500px;" /> *@
+<div class="page-container" >
+    <div class="header" style="height: 500px; align-items: center;
+        align-content:center; background-image: url(/lib/images/homepagecover.png); background-repeat: no-repeat; background-size: cover; opacity: 0.9;">
+        <div class="header-title" style="height: 30%; width: 30%; margin-left: 50px;">
+            <h2 style="color: white; font-weight: bold;">Summer Collection</h2>
+            <p style="color: white; font-weight: bold;">Look good this summer in a stylish new hat</p>
+            <Button Color="ButtonColor.Light">Shop Now</Button>
+        </div>   
     </div>
+    <div class="banner row">
+        <div class="col" style="border: 1px solid black;"></div>
+        <div class="col" style="border: 1px solid black;"></div>
+        <div class="col" style="border: 1px solid black;"></div>
+        <div class="col" style="border: 1px solid black;"></div>
+    </div>
+
 </div>
