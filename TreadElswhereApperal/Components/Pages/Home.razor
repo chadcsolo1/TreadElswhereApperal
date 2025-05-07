@@ -1,21 +1,51 @@
 ﻿@page "/"
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<EcommerceDbContext> DbContextFactory
+@inject NavigationManager NavigationManager
 
 @* style="height: 500px;border: 1px solid black; background-image: url(/lib/images/homepagecover.png); object-fit: cover;" *@
 @* <img src="/lib/images/homepagecover.png" style="display: block; margin-left: auto; margin-right: auto; width: 100%; height: 500px;" /> *@
-<div class="page-container" >
+<div class="grid-container" >
+
+
+
     <div class="header" style="height: 500px; align-items: center;
-        align-content:center; background-image: url(/lib/images/homepagecover.png); background-repeat: no-repeat; background-size: cover; opacity: 0.9;">
-        <div class="header-title" style="height: 30%; width: 30%; margin-left: 50px;">
-            <h2 style="color: white; font-weight: bold;">Summer Collection</h2>
-            <p style="color: white; font-weight: bold;">Look good this summer in a stylish new hat</p>
-            <Button Color="ButtonColor.Light">Shop Now</Button>
-        </div>   
+         align-content:center; background-image: url(/lib/images/homepagecover.png); background-repeat: no-repeat; background-size: cover; opacity: 0.9;"> 
+        <div class="header-title" style="height: 30%; width: 30%; margin-left: 50px;"> 
+            <h2 style="color: white; font-weight: bold;">Summer Collection</h2> 
+            <p style="color: white; font-weight: bold;">Look good this summer in a stylish new hat</p> 
+            <Button Color="ButtonColor.Light">Shop Now</Button> 
+        </div>    
     </div>
-    <div class="banner row">
-        <div class="col" style="border: 1px solid black;"></div>
-        <div class="col" style="border: 1px solid black;"></div>
-        <div class="col" style="border: 1px solid black;"></div>
-        <div class="col" style="border: 1px solid black;"></div>
+    <div class="featured-products">
+        <h2>Best Sellers</h2>
+        <hr />
+        <div class="featured-products-inner">
+            @foreach (var product in listOfProducts)
+            {
+                <_ProductCard Product="product" />
+            }
+        </div>
+    </div>
+    <div class="banner-row">
+        <div class="icon-col"><i class="bi bi-truck"></i> Free Shipping</div>
+        <div class="icon-col"><i class="bi bi-mailbox-flag"></i> Easy Return</div>
+        <div class="icon-col"><i class="bi bi-star-fill"></i> 30,000 5-Star Reviews</div>
+    </div>
+    <div class="collections">
+
     </div>
 
 </div>
+
+@code {
+    private EcommerceDbContext _dbContext = default!;
+    List<Product> listOfProducts = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _dbContext = DbContextFactory.CreateDbContext();
+        listOfProducts = await _dbContext.Products.ToListAsync();
+        listOfProducts = listOfProducts.GetRange(0, 4);
+    }
+}
