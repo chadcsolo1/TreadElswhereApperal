@@ -24,6 +24,33 @@ p {
     gap: 30px;
 }
 
+.header-t {
+    color: white;
+    font-weight: bold;
+    font-size: 50px;
+}
+
+.header-p {
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.header-button {
+    height: 50px;
+    width: 300px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    font-size: 20px;
+    border: none;
+    border-radius: 3px;
+    opacity: 0.9;
+}
+
+.header-button:hover {
+    opacity: 1;
+}
+
 .header {
     grid-column: span 3;
     border-bottom: 1px solid #ddd;
@@ -66,4 +93,53 @@ p {
 .collections {
     grid-column: span 3;
     border-bottom: 1px solid #ddd;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    justify-items: center;
+}
+
+.collection-item {
+    height: 600px;
+    width: 600px;
+    position: relative;
+
+}
+
+.collection-item, img {
+    height: 500px;
+    width: 500px;
+}
+
+.collection-item:hover, img:hover {
+    opacity: 0.8;
+}
+
+.collection-item .content {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+/*    opacity: 1;*/
+}
+
+.content-text {
+    color: white;
+    font-size: large;
+    font-weight: bold;
+}
+
+.content-button {
+    border: 1px solid white;
+    width: 200px;
+    height: 50px;
+    border-radius: 3px;
+    font-weight: bold;
+    opacity: 0.9;
+    margin: 20px;
 }
