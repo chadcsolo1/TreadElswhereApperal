@@ -1,0 +1,100 @@
+﻿@page "/sales"
+@rendermode InteractiveServer
+
+
+<h3>Sales</h3>
+
+<BarChart @ref="_barChart" Width="800" Class="mb-4"></BarChart>
+
+<Button Type="ButtonType.Button" Color="ButtonColor.Primary" Size="ButtonSize.Small"
+    @onclick="async () => await ShowHorizontalBarChartAsync()">Horizontal</Button>
+
+<Button Type="ButtonType.Button" Color="ButtonColor.Primary" Size="ButtonSize.Small"
+        @onclick="async () => await ShowVerticalBarChartAsync()">
+    Vertical
+</Button>
+
+
+
+
+
+
+@code {
+    private BarChart _barChart = default!;
+    private BarChartOptions _barChartOptions = default!;
+    private ChartData _chartData = default!;
+
+    protected override void OnInitialized()
+    {
+        var myLabels = new List<string> {
+            "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+        };
+
+        var myDataSets = new List<IChartDataset>
+        {
+            new BarChartDataset()
+            {
+                Label = "Dog Products",
+                Data = new List<double?> { 12, 19, 30, 50, 22, 3, 71, 85, 9, 100, 17, 62 },
+                BackgroundColor = new List<string> { System.Drawing.Color.OrangeRed.ToRgbString() },
+                BorderColor = new List<string> { System.Drawing.Color.OrangeRed.ToRgbString() },
+                BorderWidth = new List<double> {0},
+            },
+            new BarChartDataset()
+            {
+                Label = "Cat Products",
+                Data = new List<double?> { 5, 8, 3, 5, 2, 3, 7, 8, 9, 10, 11, 12 },
+                BackgroundColor = new List<string> { System.Drawing.Color.Cyan.ToRgbString() },
+                BorderColor = new List<string> { System.Drawing.Color.Cyan.ToRgbString() },
+                BorderWidth = new List<double> {0},
+            }
+        };
+
+        _chartData = new ChartData
+        {
+                Labels = myLabels,
+                Datasets = myDataSets
+        };
+
+        _barChartOptions = new BarChartOptions
+        {
+                Responsive = true,
+                Interaction = new Interaction { Mode = InteractionMode.Index }
+        };
+
+    }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await _barChart.InitializeAsync(_chartData, _barChartOptions);
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task ShowHorizontalBarChartAsync()
+    {
+        _barChartOptions.IndexAxis = "y";
+        await _barChart.UpdateAsync(_chartData, _barChartOptions);
+    }
+
+    private async Task ShowVerticalBarChartAsync()
+    {
+        _barChartOptions.IndexAxis = "x";
+        await _barChart.UpdateAsync(_chartData, _barChartOptions);
+    }
+}
+
