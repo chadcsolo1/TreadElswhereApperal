@@ -1,7 +1,10 @@
 ﻿@page "/productsdisplay"
+@using Blazored.Toast.Services
 @using Microsoft.EntityFrameworkCore
 @inject IDbContextFactory<EcommerceDbContext> DbContextFactory
 @inject NavigationManager NavigationManager
+@inject ILocalStorageService localStorage
+@inject IToastService toastService
 
 
 <h3>ProductsDisplay</h3>
@@ -109,6 +112,15 @@
 
         // });
 
+        var cart = await localStorage.GetItemAsync<List<Product>>("cart");
+        if (cart == null)
+        {
+            cart = new List<Product>();
+        }
+
+        cart.Add(product);
+        await localStorage.SetItemAsync("cart", cart);
+        toastService.ShowSuccess(product.Name + "Added to Cart:");
 
 
         await ShoppingCart.ShowAsync();

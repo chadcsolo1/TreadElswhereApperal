@@ -1,3 +1,5 @@
+using Blazored.LocalStorage;
+using Blazored.Toast;
 using Microsoft.EntityFrameworkCore;
 using TreadElswhereApperal.Components;
 using TreadElswhereApperal.Models;
@@ -11,6 +13,8 @@ builder.Services.AddRazorComponents()
 builder.Services.AddBlazorBootstrap();
 builder.Services.AddDbContextFactory<EcommerceDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection")));
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddBlazoredToast();
 
 builder.Services.AddQuickGridEntityFrameworkAdapter();
 
