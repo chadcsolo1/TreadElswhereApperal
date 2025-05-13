@@ -1,0 +1,24 @@
+﻿@inject ILocalStorageService localStorage
+
+
+<a href="cart" class="btn btn-info">
+    <i class="bi bi-cart"></i>
+    Cart
+    <span class="badge rounded-pill bg-dark">@cartCount</span>
+</a>
+
+
+
+
+@code {
+    private int cartCount = 0;
+
+    private async Task<int> GetProductCount()
+    {
+        var cart = await localStorage.GetItemAsync<List<Product>>("cart");
+
+        cartCount = cart != null ? cartCount : 0;
+
+        return cartCount;
+    }
+}
