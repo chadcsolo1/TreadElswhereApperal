@@ -1,4 +1,4 @@
-﻿@inject ILocalStorageService localStorage
+﻿@inject ISyncLocalStorageService localStorage
 
 
 <a href="cart" class="btn btn-info">
@@ -13,12 +13,27 @@
 @code {
     private int cartCount = 0;
 
-    private async Task<int> GetProductCount()
-    {
-        var cart = await localStorage.GetItemAsync<List<Product>>("cart");
+    // protected override async Task After()
+    // {
+    
+    //     var cart = localStorage.GetItem<List<Product>>("cart");
 
-        cartCount = cart != null ? cartCount : 0;
+    //     cartCount = cart != null ? cartCount : 0;
 
-        return cartCount;
-    }
+    //     Console.WriteLine("Cart Count:" + cart.Count);
+
+ 
+    
+    // }
+
+
+
+    // private async Task<int> GetProductCount()
+    // {
+    //     var cart = await localStorage.GetItemAsync<List<Product>>("cart");
+
+    //     cartCount = cart != null ? cartCount : 0;
+
+    //     return cartCount;
+    // }
 }

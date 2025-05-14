@@ -124,6 +124,9 @@
         await localStorage.SetItemAsync("cart", cart);
         toastService.ShowSuccess(product.Name + "Added to Cart:");
 
+        var cartTwo = await localStorage.GetItemAsync<List<OrderDetail>>("cart");
+        var cartThree = await localStorage.GetItemAsync<List<Product>>("cart");
+
 
         await ShoppingCart.ShowAsync();
     }
