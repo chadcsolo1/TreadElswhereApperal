@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using TreadElswhereApperal.Components;
 using TreadElswhereApperal.Models;
 using TreadElswhereApperal.Services.CartService;
+using TreadElswhereApperal.Services.ProductsService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ builder.Services.AddBlazorBootstrap();
 builder.Services.AddDbContextFactory<EcommerceDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection")));
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IProductsService, ProductsService>();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddBlazoredToast();
 

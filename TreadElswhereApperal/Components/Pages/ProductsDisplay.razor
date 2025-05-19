@@ -1,10 +1,11 @@
 ﻿@page "/productsdisplay"
-@using Blazored.Toast.Services
-@using Microsoft.EntityFrameworkCore
-@inject IDbContextFactory<EcommerceDbContext> DbContextFactory
+@inject IProductsService productService
+@* @inject IDbContextFactory<EcommerceDbContext> DbContextFactory *@
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService localStorage
 @inject IToastService toastService
+@inject ICartService _cartService
+
 
 
 @* <_TopMenu></_TopMenu> *@
@@ -72,7 +73,7 @@
 
 
 @code {
-    private EcommerceDbContext _dbContext = default!;
+    //private EcommerceDbContext _dbContext = default!;
     List<Product> listOfProducts = new();
     //public List<Product> cartProducts = new();
     public List<OrderDetail> listOrderDetails = new();
@@ -83,9 +84,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _dbContext = DbContextFactory.CreateDbContext();
-        listOfProducts = await _dbContext.Products.ToListAsync();
-        testProduct = listOfProducts.FirstOrDefault();
+        // _dbContext = DbContextFactory.CreateDbContext();
+        // listOfProducts = await _dbContext.Products.ToListAsync();
+        // testProduct = listOfProducts.FirstOrDefault();
+
+        listOfProducts = await productService.GetProducts();
     }
 
     protected async Task AddProductToCart(Product product)
@@ -114,21 +117,28 @@
 
         // });
 
-        var cart = await localStorage.GetItemAsync<List<Product>>("cart");
-        if (cart == null)
-        {
-            cart = new List<Product>();
-        }
+        // var cart = await localStorage.GetItemAsync<List<Product>>("cart");
+        // if (cart == null)
+        // {
+        //     cart = new List<Product>();
+        // }
 
-        cart.Add(product);
-        await localStorage.SetItemAsync("cart", cart);
-        toastService.ShowSuccess(product.Name + "Added to Cart:");
+        // cart.Add(product);
+        // await localStorage.SetItemAsync("cart", cart);
+        // toastService.ShowSuccess(product.Name + "Added to Cart:");
 
-        var cartTwo = await localStorage.GetItemAsync<List<OrderDetail>>("cart");
-        var cartThree = await localStorage.GetItemAsync<List<Product>>("cart");
+        // var cartTwo = await localStorage.GetItemAsync<List<OrderDetail>>("cart");
+        // var cartThree = await localStorage.GetItemAsync<List<Product>>("cart");
+
+        await AddToCart(product);
 
 
         await ShoppingCart.ShowAsync();
+    }
+
+    private async Task AddToCart(Product product)
+    {
+        await _cartService.AddToCart(product);
     }
 
     protected async Task RemoveProductFromCart(OrderDetail orderDetail)
