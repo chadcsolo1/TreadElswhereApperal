@@ -1,30 +1,83 @@
-﻿@inject ISyncLocalStorageService localStorage
-@inject ICartService _cartService
-@implements IDisposable
+﻿@inject ProtectedLocalStorage _protectedLocalStorage
+
 
 
 <a href="cart" class="btn btn-info">
     <i class="bi bi-cart"></i>
     Cart
-    <span class="badge rounded-pill bg-dark">@GetProductCount()</span>
+    <span class="badge rounded-pill bg-dark">
+
+        @cartCount
+
+
+    </span>
 </a>
 
 
 
 
 @code {
-    private int cartCount;
+    private int? cartCount = 0;
+    private bool isConnected;
 
 
-    protected override void OnInitialized()
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _cartService.OnChange += StateHasChanged;
+        if (firstRender)
+        {
+            isConnected = true;
+            await LoadStateAsync();
+            StateHasChanged();
+        }
     }
 
-    public void Dispose()
+    private async Task LoadStateAsync()
     {
-        _cartService.OnChange -= StateHasChanged;
+        try
+        {
+            var result = await _protectedLocalStorage.GetAsync<List<Product>>("cart=");
+            cartCount = result.Success ? result.Value.Count : 0;
+        } catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading cart: {ex.Message}");
+            return;
+        }
+        
     }
+
+
+    // protected async override void OnInitialized()
+    // {
+
+        
+    //     cartCount = shoppingCart.LineItems.Count();
+    //     shoppingCart.OnChange += StateHasChanged;
+    //     await GetProductCount();
+    //     _cartService.OnChange += StateHasChanged;
+    // }
+
+    // protected async void OnAfterRenderAsync()
+    // {
+    //     await GetProductCount();
+    // }
+
+    // protected async Task OnInitializedAsync()
+    // {
+    //     //await GetProductCount();
+    //     var cart = await localStorage.GetItemAsync<List<Product>>("cart");
+
+    //     //var cart = await _protectedLocalStorage.GetAsync<List<Product>>("cart");
+
+    //     cartCount = cart != null ? cartCount : 0;
+
+    //     //return cart.Value.Count();
+    // }
+
+    // public void Dispose()
+    // {
+    //     _cartService.OnChange -= StateHasChanged;
+    // }
 
     // protected override async Task After()
     // {
@@ -39,12 +92,24 @@
 
     // }
 
-    private int GetProductCount()
-    {
-        var cart = localStorage.GetItem<List<Product>>("cart");
+    // private async Task<int> GetProductCount()
+    // {
 
-        cartCount = cart != null ? cartCount : 0;
+    //     //var cart = await localStorage.GetItemAsync<List<Product>>("cart");
 
-        return cartCount;
-    }
+    //     var cart = await _protectedLocalStorage.GetAsync<List<Product>>("cart");
+
+    //     cartCount = cart.Value != null ? cart.Value.Count() : 0;
+
+    //     return cartCount;
+
+    //     //return cart.Value != null ? cart.Value.Count() : 0;
+
+        
+    // }
+
+
+
+    //@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage 
+    //@rendermode InteractiveServer
 }

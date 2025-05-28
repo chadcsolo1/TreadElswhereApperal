@@ -2,6 +2,7 @@
 {
     public class ShoppingCart
     {
+        public event Action OnChange;
         public int CustomerId
         {
             get;

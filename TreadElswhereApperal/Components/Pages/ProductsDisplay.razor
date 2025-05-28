@@ -1,10 +1,10 @@
 ﻿@page "/productsdisplay"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject IProductsService productService
 @* @inject IDbContextFactory<EcommerceDbContext> DbContextFactory *@
+    @inject ProtectedLocalStorage _protectedLocalStorage
 @inject NavigationManager NavigationManager
-@inject ILocalStorageService localStorage
 @inject IToastService toastService
-@inject ICartService _cartService
 
 
 
@@ -138,7 +138,9 @@
 
     private async Task AddToCart(Product product)
     {
-        await _cartService.AddToCart(product);
+        //cartService.Products.Add(product);
+        await _protectedLocalStorage.SetAsync("cart=", product);
+        //await _cartService.AddToCart(product);
     }
 
     protected async Task RemoveProductFromCart(OrderDetail orderDetail)

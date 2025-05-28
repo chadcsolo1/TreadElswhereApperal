@@ -15,6 +15,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddBlazorBootstrap();
 builder.Services.AddDbContextFactory<EcommerceDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection")));
+//builder.Services.AddSingleton<ShoppingCart>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IProductsService, ProductsService>();
 builder.Services.AddBlazoredLocalStorage();

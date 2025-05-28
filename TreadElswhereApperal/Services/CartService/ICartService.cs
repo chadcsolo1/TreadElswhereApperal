@@ -6,6 +6,6 @@ namespace TreadElswhereApperal.Services.CartService
     {
 
         event Action OnChange;
-        Task AddToCart(Product product);
+        Task AddToCart(ShoppingCart cart, Product product);
     }
 }
