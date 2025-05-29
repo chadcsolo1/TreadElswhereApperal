@@ -1,4 +1,5 @@
-﻿@inject ProtectedLocalStorage _protectedLocalStorage
+﻿@using System.Text.Json
+@inject ProtectedLocalStorage _protectedLocalStorage
 
 
 
@@ -36,8 +37,11 @@
     {
         try
         {
-            var result = await _protectedLocalStorage.GetAsync<List<Product>>("cart=");
-            cartCount = result.Success ? result.Value.Count : 0;
+            var result = await _protectedLocalStorage.GetAsync<List<Product>>("cart1");
+
+            var count = result.Success ? result.Value?.Count : 0;
+
+            cartCount = count > 0 ? count : 0;
         } catch (Exception ex)
         {
             Console.WriteLine($"Error loading cart: {ex.Message}");

@@ -1,5 +1,6 @@
 ﻿@page "/productsdisplay"
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using System.Text.Json
 @inject IProductsService productService
 @* @inject IDbContextFactory<EcommerceDbContext> DbContextFactory *@
     @inject ProtectedLocalStorage _protectedLocalStorage
@@ -138,9 +139,20 @@
 
     private async Task AddToCart(Product product)
     {
-        //cartService.Products.Add(product);
-        await _protectedLocalStorage.SetAsync("cart=", product);
-        //await _cartService.AddToCart(product);
+        var result = await _protectedLocalStorage.GetAsync<object>("cart1");
+
+        if (result.Success)
+        {
+            // Deserialize the existing cart if it exists
+            var existingCart = JsonSerializer.Deserialize<List<Product>>(result.Value.ToString()) ?? new List<Product>();
+            existingCart.Add(product);
+            await _protectedLocalStorage.SetAsync("cart1", existingCart);
+        } else
+        {
+            // If no cart exists, create a new one with the product
+            await _protectedLocalStorage.SetAsync("cart1", new List<Product> { product });
+        }
+        StateHasChanged();
     }
 
     protected async Task RemoveProductFromCart(OrderDetail orderDetail)
