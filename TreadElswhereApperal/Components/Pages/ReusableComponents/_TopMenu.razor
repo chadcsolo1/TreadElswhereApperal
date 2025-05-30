@@ -1,5 +1,7 @@
 ﻿@using System.Text.Json
 @inject ProtectedLocalStorage _protectedLocalStorage
+@inject ICartService _cartService
+@implements IDisposable
 
 
 
@@ -21,16 +23,31 @@
     private int? cartCount = 0;
     private bool isConnected;
 
+    protected override void OnInitialized()
+    {
+        _cartService.OnChange += StateHasChanged;
+    }
+
 
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            isConnected = true;
+            isConnected = false;
+            await LoadStateAsync();
+            StateHasChanged();
+        } else
+        {
             await LoadStateAsync();
             StateHasChanged();
         }
+        //_cartService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        _cartService.OnChange -= StateHasChanged;
     }
 
     private async Task LoadStateAsync()

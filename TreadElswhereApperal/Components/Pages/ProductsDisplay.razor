@@ -6,6 +6,7 @@
     @inject ProtectedLocalStorage _protectedLocalStorage
 @inject NavigationManager NavigationManager
 @inject IToastService toastService
+@inject ICartService _cartService
 
 
 
@@ -118,42 +119,32 @@
 
         // });
 
-        // var cart = await localStorage.GetItemAsync<List<Product>>("cart");
-        // if (cart == null)
-        // {
-        //     cart = new List<Product>();
-        // }
 
-        // cart.Add(product);
-        // await localStorage.SetItemAsync("cart", cart);
-        // toastService.ShowSuccess(product.Name + "Added to Cart:");
+        //await AddToCart(product);
 
-        // var cartTwo = await localStorage.GetItemAsync<List<OrderDetail>>("cart");
-        // var cartThree = await localStorage.GetItemAsync<List<Product>>("cart");
-
-        await AddToCart(product);
+        await _cartService.AddToCart(product);
 
 
         await ShoppingCart.ShowAsync();
     }
 
-    private async Task AddToCart(Product product)
-    {
-        var result = await _protectedLocalStorage.GetAsync<object>("cart1");
+    // private async Task AddToCart(Product product)
+    // {
+    //     var result = await _protectedLocalStorage.GetAsync<object>("cart1");
 
-        if (result.Success)
-        {
-            // Deserialize the existing cart if it exists
-            var existingCart = JsonSerializer.Deserialize<List<Product>>(result.Value.ToString()) ?? new List<Product>();
-            existingCart.Add(product);
-            await _protectedLocalStorage.SetAsync("cart1", existingCart);
-        } else
-        {
-            // If no cart exists, create a new one with the product
-            await _protectedLocalStorage.SetAsync("cart1", new List<Product> { product });
-        }
-        StateHasChanged();
-    }
+    //     if (result.Success)
+    //     {
+    //         Deserialize the existing cart if it exists
+    //         var existingCart = JsonSerializer.Deserialize<List<Product>>(result.Value.ToString()) ?? new List<Product>();
+    //         existingCart.Add(product);
+    //         await _protectedLocalStorage.SetAsync("cart1", existingCart);
+    //     } else
+    //     {
+    //         If no cart exists, create a new one with the product
+    //         await _protectedLocalStorage.SetAsync("cart1", new List<Product> { product });
+    //     }
+    //     StateHasChanged();
+    // }
 
     protected async Task RemoveProductFromCart(OrderDetail orderDetail)
     {
