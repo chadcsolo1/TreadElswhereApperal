@@ -1,16 +1,71 @@
 ﻿@page "/shoppingcart"
 
 
-<Offcanvas @ref="offcanvasCart" Title="Offcanvas ShoppingCart" Placement="Placement.End">
+<Offcanvas @ref="shoppingCart" Title="ShoppingCart" Placement="Placement.End">
     <BodyTemplate>
+        <div>
+            <h2>Select Products</h2>
+            <hr />
+            @if (order is null)
+            {
+                <p><em>Loading...</em></p>
+            } else
+            {
+                @foreach (var orderDetail in listOrderDetails)
+                {
+                    <div class="card-container" style="margin-top: 5px;">
+                        <div class="card" style="display: flex; flex-direction: row; justify-content: space-between; align-content: stretch;">
+                            <div class="row" style="margin-right: 0px;">
+                                <div class="col">
+                                    <img src="@orderDetail.Product.Img" alt="Product Image" style="height: 150px; width: 250px" class="img-fluid" />
+                                </div>
+                                <div class="col" style="text-align: center;">
+                                    <h5 style="font-size: 16px; font-weight: bold">@orderDetail.Product.Name</h5>
+                                    <p style="font-size: 11px;">Color: @orderDetail.Product.Colors</p>
+                                    <p style="font-size: 11px;">Size: @orderDetail.Product.Sizes</p>
+                                    <NumberInput TValue="int?" @bind-Value="@orderDetail.Quantity">@orderDetail.Quantity</NumberInput>
+                                </div>
+                                <div class="col" style="display: flex; flex-direction: column; justify-content: space-between; width: auto; padding-left: 10px;">
+                                    <Button @onclick="() => RemoveProductFromCart(orderDetail)" Style="background-color: none; margin-right: 0px; padding-right: 0px; text-align: right;">
+                                        <Icon Name="IconName.Trash"></Icon>
+                                    </Button>
+                                    <p style="font-size: 15px; margin-right: 0px; padding-right: 0px; text-align: right;">$ @orderDetail.Subtotal</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
+                    <p>Quantity : @orderDetail.Quantity</p>
+                    <p>PricePerUnit : @orderDetail.PricePerUnit</p>
+                    <p>Subtotal : @orderDetail.Subtotal</p>
+                }
+                <div>
+                    <hr />
+                    <h5 style="font-size: 16px; font-weight: bold">Total: $ @order.Subtotal</h5>
+                    <Button Color="ButtonColor.Primary" Type="ButtonType.Link" style="align-content: stretch">
+                        CHECKOUT
+                    </Button>
+                </div>
+            }
+        </div>
     </BodyTemplate>
 </Offcanvas>
 
 
 @code {
     [Parameter]
-    public List<Product> Products { get; set; } = new List<Product>();
+    public Order order { get; set; } = new Order();
 
-    private Offcanvas offcanvasCart = default!;
+    private List<OrderDetail> listOrderDetails = new List<OrderDetail>();
+
+    private Offcanvas shoppingCart = default!;
+
+
+
+
+    protected async Task RemoveProductFromCart(OrderDetail orderDetail)
+    {
+        //order.OrderDetails.Remove(order.OrderDetails.FirstOrDefault(x => x.Product == product));
+        listOrderDetails.Remove(orderDetail);
+    }
 }
