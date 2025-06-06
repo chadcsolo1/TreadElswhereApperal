@@ -47,6 +47,19 @@ namespace TreadElswhereApperal.Services.CartService
         //    OnChange.Invoke();
         //}
 
+        public async Task GetCart(OrderDetail orderDetail)
+        {
+            var cart  = await _protectedLocalStorage.GetAsync<object>("cart1");
+
+            if (!cart.Success)
+            {
+                Console.WriteLine("There are no items in the shopping cart");
+                return;
+            }
+
+            orderDetail.Product = (Product)cart.Value;
+        }
+
         public async Task AddToCart(Product product)
         {
             var result = await _protectedLocalStorage.GetAsync<object>("cart1");

@@ -1,11 +1,12 @@
 ﻿@using System.Text.Json
 @inject ProtectedLocalStorage _protectedLocalStorage
 @inject ICartService _cartService
+@inject NavigationManager NavigationManager
 @implements IDisposable
 
 
 
-<a href="cart" class="btn btn-info">
+<a href="/shoppingcart" class="btn btn-info">
     <i class="bi bi-cart"></i>
     Cart
     <span class="badge rounded-pill bg-dark">
@@ -68,66 +69,7 @@
     }
 
 
-    // protected async override void OnInitialized()
-    // {
 
-        
-    //     cartCount = shoppingCart.LineItems.Count();
-    //     shoppingCart.OnChange += StateHasChanged;
-    //     await GetProductCount();
-    //     _cartService.OnChange += StateHasChanged;
-    // }
-
-    // protected async void OnAfterRenderAsync()
-    // {
-    //     await GetProductCount();
-    // }
-
-    // protected async Task OnInitializedAsync()
-    // {
-    //     //await GetProductCount();
-    //     var cart = await localStorage.GetItemAsync<List<Product>>("cart");
-
-    //     //var cart = await _protectedLocalStorage.GetAsync<List<Product>>("cart");
-
-    //     cartCount = cart != null ? cartCount : 0;
-
-    //     //return cart.Value.Count();
-    // }
-
-    // public void Dispose()
-    // {
-    //     _cartService.OnChange -= StateHasChanged;
-    // }
-
-    // protected override async Task After()
-    // {
-
-    //     var cart = localStorage.GetItem<List<Product>>("cart");
-
-    //     cartCount = cart != null ? cartCount : 0;
-
-    //     Console.WriteLine("Cart Count:" + cart.Count);
-
-
-
-    // }
-
-    // private async Task<int> GetProductCount()
-    // {
-
-    //     //var cart = await localStorage.GetItemAsync<List<Product>>("cart");
-
-    //     var cart = await _protectedLocalStorage.GetAsync<List<Product>>("cart");
-
-    //     cartCount = cart.Value != null ? cart.Value.Count() : 0;
-
-    //     return cartCount;
-
-    //     //return cart.Value != null ? cart.Value.Count() : 0;
-
-        
-    // }
 
 
 
