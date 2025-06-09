@@ -49,7 +49,7 @@ namespace TreadElswhereApperal.Services.CartService
 
         public async Task GetCart(OrderDetail orderDetail)
         {
-            var cart  = await _protectedLocalStorage.GetAsync<object>("cart1");
+            var cart  = await _protectedLocalStorage.GetAsync<Product>("cart1");
 
             if (!cart.Success)
             {
@@ -57,7 +57,9 @@ namespace TreadElswhereApperal.Services.CartService
                 return;
             }
 
-            orderDetail.Product = (Product)cart.Value;
+
+
+            orderDetail.Product = cart.Value;
         }
 
         public async Task AddToCart(Product product)

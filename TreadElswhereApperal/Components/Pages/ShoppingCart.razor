@@ -7,11 +7,12 @@
         <div>
             <h2>Select Products</h2>
             <hr />
-            @if (order is null)
+            @while (order is null)
             {
                 <p><em>Loading...</em></p>
-            } else
-            {
+            }
+            
+
                 @foreach (var orderDetail in listOrderDetails)
                 {
                     <div class="card-container" style="margin-top: 5px;">
@@ -47,7 +48,7 @@
                         CHECKOUT
                     </Button>
                 </div>
-            }
+            
         </div>
     </BodyTemplate>
 </Offcanvas>
@@ -58,7 +59,7 @@
     {
         get; set;
 
-    } = new Order();
+    } 
 
     public OrderDetail orderDetail { get; set; } = new OrderDetail();
 
