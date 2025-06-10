@@ -6,7 +6,7 @@
 
 
 
-<a href="/shoppingcart" class="btn btn-info">
+<a href="/shoppingcart" class="btn btn-info" @onclick="_cartService.ShowCart">
     <i class="bi bi-cart"></i>
     Cart
     <span class="badge rounded-pill bg-dark">
@@ -32,8 +32,8 @@
     {
         _cartService.OnChange += StateHasChanged;
 
-        listOrderDetails.Add(orderDetail);
-        _cartService.GetCart(orderDetail);
+        //_cartService.GetCart(listOrderDetails);
+        //listOrderDetails.Add(orderDetail);
     }
 
 

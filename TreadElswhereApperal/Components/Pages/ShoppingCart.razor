@@ -1,18 +1,19 @@
 ﻿@page "/shoppingcart"
+@inject ProtectedLocalStorage _protectedLocalStorage
 @inject ICartService _cartService
-
+@inject NavigationManager NavigationManager
+@implements IDisposable
 
 <Offcanvas @ref="shoppingCart" Title="ShoppingCart" Placement="Placement.End">
     <BodyTemplate>
         <div>
             <h2>Select Products</h2>
             <hr />
-            @while (order is null)
+            @if (order is null)
             {
                 <p><em>Loading...</em></p>
-            }
-            
-
+            } else
+            {
                 @foreach (var orderDetail in listOrderDetails)
                 {
                     <div class="card-container" style="margin-top: 5px;">
@@ -48,18 +49,19 @@
                         CHECKOUT
                     </Button>
                 </div>
-            
+            }
         </div>
     </BodyTemplate>
 </Offcanvas>
 
 
 @code {
-    public Order order
+    public Order? order
     {
         get; set;
 
-    } 
+    }
+    private bool isConnected;
 
     public OrderDetail orderDetail { get; set; } = new OrderDetail();
 
@@ -69,12 +71,73 @@
 
     //**** We need to map the product coming from local storage into a orderDetail and then that orderDetail into an order****/
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        listOrderDetails.Add(orderDetail);
-        await _cartService.GetCart(orderDetail);
+        //_cartService.OnChange += StateHasChanged;
 
-        //await shoppingCart.ShowAsync();
+        _cartService.OnChange += ShowCart;
+
+        //listOrderDetails.Add(orderDetail);
+        //_cartService.GetCart(listOrderDetails);
+
+        // shoppingCart.ShowAsync();
+    }
+
+    private async void ShowCart()
+    {
+        await shoppingCart.ShowAsync();
+        StateHasChanged();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            isConnected = false;
+            await LoadStateAsync();
+            StateHasChanged();
+        } else
+        {
+            //await LoadStateAsync();
+            StateHasChanged();
+        }
+        //_cartService.OnChange += StateHasChanged;
+        //shoppingCart.ShowAsync();
+    }
+
+    public void Dispose()
+    {
+        _cartService.OnChange -= StateHasChanged;
+    }
+
+    private async Task LoadStateAsync()
+    {
+        try
+        {
+            await _cartService.GetCart(listOrderDetails);
+            if (listOrderDetails.Count > 0)
+            {
+                await CreateOrder(listOrderDetails);
+            } else
+            {
+                order = null;
+            }
+
+        } catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading cart: {ex.Message}");
+            return;
+        }
+
+    }
+
+    private async Task CreateOrder(List<OrderDetail> orderDetails)
+    {
+        order = new Order
+        {
+                OrderDetails = orderDetails,
+                Subtotal = orderDetails.Sum(od => od.PricePerUnit),
+        };
     }
 
 

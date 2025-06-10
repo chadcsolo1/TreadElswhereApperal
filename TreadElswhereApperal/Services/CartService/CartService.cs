@@ -4,6 +4,7 @@ using TreadElswhereApperal.Models;
 using TreadElswhereApperal.Services.ProductsService;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using System.Text.Json;
+using NuGet.Protocol;
 
 
 namespace TreadElswhereApperal.Services.CartService
@@ -24,6 +25,8 @@ namespace TreadElswhereApperal.Services.CartService
             _productService = productService;
             _protectedLocalStorage = protectedLocalStorage;
         }
+
+        public void ShowCart() => OnChange.Invoke();
 
         //public async Task AddToCart(Product product)
         //{
@@ -47,9 +50,10 @@ namespace TreadElswhereApperal.Services.CartService
         //    OnChange.Invoke();
         //}
 
-        public async Task GetCart(OrderDetail orderDetail)
+        public async Task GetCart(List<OrderDetail> orderDetails)
         {
-            var cart  = await _protectedLocalStorage.GetAsync<Product>("cart1");
+            var cart = await _protectedLocalStorage.GetAsync<List<Product>>("cart1");
+            //List<Product> products = new List<Product>();
 
             if (!cart.Success)
             {
@@ -57,19 +61,32 @@ namespace TreadElswhereApperal.Services.CartService
                 return;
             }
 
+            foreach (var product in cart.Value)
+            {
+                orderDetails.Add(new OrderDetail
+                {
+                    Product = product,
+                    ProductId = product.Id,
+                    Quantity = 1, // Default quantity, can be adjusted later
+                    PricePerUnit = (decimal)product.Price // Assuming Price is a property of Product
+                });
+            }
 
 
-            orderDetail.Product = cart.Value;
+
+
+            //dorderDetail.Product = cart.Value;
         }
 
         public async Task AddToCart(Product product)
         {
-            var result = await _protectedLocalStorage.GetAsync<object>("cart1");
+            var result = await _protectedLocalStorage.GetAsync<List<Product>>("cart1");
 
             if (result.Success)
             {
                 // Deserialize the existing cart if it exists
-                var existingCart = JsonSerializer.Deserialize<List<Product>>(result.Value.ToString()) ?? new List<Product>();
+                //var existingCart = JsonSerializer.Deserialize<List<Product>>(result.Value.ToString()) ?? new List<Product>();
+                var existingCart = result.Value.ToList();
                 existingCart.Add(product);
                 await _protectedLocalStorage.SetAsync("cart1", existingCart);
             } else
